@@ -12,6 +12,12 @@ const PrototypeDefination = `
         return line.split(columnSep || '\\t').map(it=>it.trim())
       })
   };
+  String.prototype.int = function(){
+    const trimmed = this.trim();
+    const num = Number(trimmed);
+    const res = (!isNaN(num) && isFinite(num)) ? num : 0;
+    return res;
+  };
   `
 
 const runScript = async (expression, text) => {
@@ -22,21 +28,13 @@ const runScript = async (expression, text) => {
   try {
     vm.runInNewContext(PrototypeDefination, context);
     const result = vm.runInNewContext(expression, context);
+    console.log(result)
+    console.log("fkk12")
     return result;
   } catch (e) {
     console.log(e)
     return e.message;
   }
-}
-
-const tryConvertToNumber = (str) => {
-  if (typeof str !== 'string') return str;
-
-  const trimmed = str.trim();
-  const num = Number(trimmed);
-
-  // 允许科学计数法（如 "1e3" → 1000）
-  return (!isNaN(num) && isFinite(num)) ? num : str;
 }
 
 const createContext = (text) => {
@@ -60,10 +58,10 @@ const createContext = (text) => {
     }
   })
   for (const key in context) {
-    context[key] = tryConvertToNumber(context[key].join("\n"));
+    context[key] = context[key].join("\n");
   }
   context[String] = String;
   return context;
 }
 
-export default runScript;
+export { runScript };

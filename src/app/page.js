@@ -1,7 +1,7 @@
 "use client"
 import { useState, useRef } from "react";
 import styles from "./page.module.css";
-import runScript from "@/api/jsrunner";
+import { runScript } from "@/api/executor";
 
 export default function Home() {
   const [text, setText] = useState("");
@@ -34,6 +34,7 @@ export default function Home() {
             placeholder="请输入文本"
             rows={16}
             ref={textareaRef}
+
           />
         </div>
         <div className={styles.rightPane}>
@@ -59,7 +60,7 @@ export default function Home() {
           type="text"
           value={expression}
           onChange={e => setExpression(e.target.value)}
-          placeholder="底部操作区输入框"
+          placeholder="命令"
           onKeyDown={e => {
             if (e.key === 'Enter') {
               handleRunScript();
