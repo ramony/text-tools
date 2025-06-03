@@ -1,24 +1,7 @@
 "use server"
 
 import vm from "vm";
-
-
-const PrototypeDefination = `
-  String.prototype.list = function() {
-    return this.split('\\n')
-  };
-  String.prototype.table = function(columnSep) {
-    return this.split('\\n').map(line=> {
-        return line.split(columnSep || '\\t').map(it=>it.trim())
-      })
-  };
-  String.prototype.int = function(){
-    const trimmed = this.trim();
-    const num = Number(trimmed);
-    const res = (!isNaN(num) && isFinite(num)) ? num : 0;
-    return res;
-  };
-  `
+import { VMContext } from "./preset"
 
 const runScript = async (expression, text) => {
   if (!expression) {
@@ -26,10 +9,8 @@ const runScript = async (expression, text) => {
   }
   const context = createContext(text);
   try {
-    vm.runInNewContext(PrototypeDefination, context);
+    vm.runInNewContext(VMContext, context);
     const result = vm.runInNewContext(expression, context);
-    console.log(result)
-    console.log("fkk12")
     return result;
   } catch (e) {
     console.log(e)

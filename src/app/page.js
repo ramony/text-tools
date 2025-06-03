@@ -1,13 +1,12 @@
 "use client"
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "./page.module.css";
 import { runScript } from "@/api/executor";
 
 export default function Home() {
-  const [text, setText] = useState("");
-  const [result, setResult] = useState("");
-  const [expression, setExpression] = useState("");
-  const textareaRef = useRef(null);
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
+  const [command, setCommand] = useState("");
   const display = (data, sep) => {
     if (Array.isArray(data)) {
       sep = sep || '\n';
@@ -16,12 +15,33 @@ export default function Home() {
       return data;
     }
   }
-  const handleRunScript = async () => {
-    const data = await runScript(expression, text);
-    console.log(data)
-    setResult(display(data));
+
+  useEffect(() => {
+    const input = localStorage.getItem('input');
+    if (input) {
+      setInput(input);
+    }
+    const command = localStorage.getItem('command');
+    if (command) {
+      setCommand(command);
+    }
+  }, [])
+
+  const handleInputChange = (value) => {
+    localStorage.setItem('input', value);
+    setInput(value);
   }
 
+  const handleCommandChange = (value) => {
+    localStorage.setItem('command', value);
+    setCommand(value);
+  }
+
+  const handleRunScript = async () => {
+    const data = await runScript(command, input);
+    const output = display(data)
+    setOutput(output);
+  }
 
   return (
     <div className={styles.pageCustom}>
@@ -29,21 +49,18 @@ export default function Home() {
         <div className={styles.leftPane}>
           <textarea
             className={styles.textarea}
-            value={text}
-            onChange={e => setText(e.target.value)}
+            value={input}
+            onChange={e => handleInputChange(e.target.value)}
             placeholder="请输入文本"
             rows={16}
-            ref={textareaRef}
-
           />
         </div>
         <div className={styles.rightPane}>
           <textarea
             className={styles.textarea}
-            value={result}
+            value={output}
             rows={16}
             readOnly
-            ref={textareaRef}
             style={{
               backgroundColor: "#f5f5f5",
               color: "#888",
@@ -58,8 +75,8 @@ export default function Home() {
         <input
           className={styles.bottomInput}
           type="text"
-          value={expression}
-          onChange={e => setExpression(e.target.value)}
+          value={command}
+          onChange={e => handleCommandChange(e.target.value)}
           placeholder="命令"
           onKeyDown={e => {
             if (e.key === 'Enter') {
