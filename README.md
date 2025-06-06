@@ -1,2 +1,5 @@
 # text-tools
-text tools
+start text tools
+```
+docker-compose up -d
+```
