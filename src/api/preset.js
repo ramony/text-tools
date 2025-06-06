@@ -1,11 +1,21 @@
 const VMContext = `
+  class Table extends Array {
+    constructor(data) {
+      super();
+      this.data = data;
+    }
+    column(index) {
+      return this.data.map(it=>it[index] === undefined ?null: it[index])
+    }  
+  };
   String.prototype.list = function() {
     return this.split('\\n')
   };
   String.prototype.table = function(columnSep) {
-    return this.split('\\n').map(line=> {
-        return line.split(columnSep || '\\t').map(it=>it.trim())
-      })
+    let data = this.split('\\n').map(line=> {
+      return line.split(columnSep || '\\t').map(it=>it.trim())
+    });
+    return new Table(data);
   };
   String.prototype.int = function(){
     const trimmed = this.trim();

@@ -10,7 +10,10 @@ const runScript = async (expression, text) => {
   const context = createContext(text);
   try {
     vm.runInNewContext(VMContext, context);
-    const result = vm.runInNewContext(expression, context);
+    let result = vm.runInNewContext(expression, context);
+    if (result.constructor.name == 'Table') {
+      result = result.data;
+    }
     return result;
   } catch (e) {
     console.log(e)
