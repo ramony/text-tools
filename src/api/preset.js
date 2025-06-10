@@ -1,4 +1,10 @@
 const VMContext = `
+  Array.prototype.replace = function(a, b){
+    return this.map(it=>it.replace(a, b));
+  };
+  Array.prototype.toString = function(){
+    return this.join('\\n');
+  };
   class Table extends Array {
     constructor(data) {
       super();
@@ -6,11 +12,16 @@ const VMContext = `
     }
     column(index) {
       return this.data.map(it=>it[index] === undefined ?null: it[index])
-    }  
+    }
+    toString() {
+      return this.data.map(it=> it.join('\\t')).join('\\n')
+    }
   };
+
   String.prototype.list = function() {
     return this.split('\\n')
   };
+  
   String.prototype.table = function(columnSep) {
     let data = this.split('\\n').map(line=> {
       return line.split(columnSep || '\\t').map(it=>it.trim())
@@ -23,9 +34,7 @@ const VMContext = `
     const res = (!isNaN(num) && isFinite(num)) ? num : 0;
     return res;
   };
-  Array.prototype.replace = function(a, b){
-    return this.map(it=>it.replace(a, b));
-  };
+
   function diff(a, b) {
     const aUnique = [...new Set(a)];
     const bUnique = [...new Set(b)];

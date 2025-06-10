@@ -11,8 +11,8 @@ const runScript = async (expression, text) => {
   try {
     vm.runInNewContext(VMContext, context);
     let result = vm.runInNewContext(expression, context);
-    if (result.constructor.name == 'Table') {
-      result = result.data;
+    if (result) {
+      result = result.toString();
     }
     return result;
   } catch (e) {
