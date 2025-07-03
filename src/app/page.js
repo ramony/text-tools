@@ -1,7 +1,7 @@
 "use client"
 import { useState, useRef, useEffect } from "react";
 import styles from "./page.module.css";
-import { runScript } from "@/api/actuator";
+import { runScript } from "@/api/client-actuator";
 
 export default function Home() {
   const [input, setInput] = useState("");
@@ -30,7 +30,7 @@ export default function Home() {
   }
 
   const handleRunScript = async () => {
-    const output = await runScript(command, input);
+    const output = runScript(command, input);
     setOutput(output);
   }
 
